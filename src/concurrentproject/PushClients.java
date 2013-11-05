@@ -18,7 +18,7 @@ public class PushClients implements Runnable{
     public PushClients(Stadium s){
         id_contador = 0;
         this.stadium = s;
-        for(int i = 0;i<10;i++){
+        for(int i = 0;i<this.stadium.limite*2;i++){
             id_contador++;
             Client c = new Client(stadium,id_contador);
             Thread t = new Thread(c);
@@ -30,11 +30,8 @@ public class PushClients implements Runnable{
     public void run() {
         while(stadium.field.is_playing){
             try {
-                Thread.sleep(1000);
-                id_contador++;
-                Client c = new Client(stadium,id_contador);
-                Thread t = new Thread(c);
-                t.start();
+                Thread.sleep(100);
+                
             } catch (InterruptedException ex) {
                 Logger.getLogger(PushClients.class.getName()).log(Level.SEVERE, null, ex);
             }

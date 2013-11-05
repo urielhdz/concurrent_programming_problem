@@ -24,28 +24,41 @@ public class Clients {
     public int looking_seat(){
         int contador = 0;
         for(Client c : clients){
-            if(c.state == 3) contador++;
+            if(c != null)
+                if(c.state == 3) contador++;
         }
         return contador;
     }
     public int seating(){
+        
         int contador = 0;
         for(Client c : clients){
-            if(c.state == 2) contador++;
+            if(c != null)
+                if(c.state == 2) contador++;
         }
         return contador;
     }
     public int waiting_ticket(){
         int contador = 0;
         for(Client c : clients){
-            if(c.state == 1) contador++;
+            if(c != null)
+                if(c.state == 1) contador++;
         }
         return contador;
     }
      public int leaving(){
         int contador = 0;
         for(Client c : clients){
-            if(c.state == 4) contador++;
+            if(c != null)
+                if(c.state == 4) contador++;
+        }
+        return contador;
+    }
+     public int paying_ticket(){
+        int contador = 0;
+        for(Client c : clients){
+            if(c != null)
+                if(c.state == 5) contador++;
         }
         return contador;
     }
@@ -54,7 +67,8 @@ public class Clients {
      }
      public Client search_client(Client pl){
          for(Client c : clients){
-             if(c.id == pl.id) return c;
+             
+             if(c == pl) return c;
          }
          return null;
      }

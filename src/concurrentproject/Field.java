@@ -150,8 +150,7 @@ public class Field implements Runnable{
             } catch (InterruptedException ex) {
                 Logger.getLogger(Field.class.getName()).log(Level.SEVERE, null, ex);
             }
-            //System.out.println("Hay "+team_one.playing()+" jugadores en el equipo uno");
-            //System.out.println("Hay "+team_two.playing()+" jugadores en el equipo dos");
+            
             System.out.println("Team 1: \n Playing: "+team_one.playing()+" \n Warming up: "+team_one.warming_up()+"\n Injured: "+team_one.injured()+"\n In the bench: "+team_one.in_bench()+"\n Leaving the field: "+team_one.leaving());
             System.out.println("Team 1: \n Playing: "+team_two.playing()+" \n Warming up: "+team_two.warming_up()+"\n Injured: "+team_two.injured()+"\n In the bench: "+team_two.in_bench()+"\n Leaving the field: "+team_two.leaving());
         }

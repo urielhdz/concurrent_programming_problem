@@ -18,51 +18,73 @@ import java.util.logging.Logger;
 public class Stadium implements Runnable{
     int limite;
     int limite_looking;
-    int limite_tickets;
+    
     Field field;
     Clients clients;
     //ArrayList<Client> clients_waiting;
     private final Lock taquilla = new ReentrantLock();
     private final Condition is_not_full = taquilla.newCondition();
-    private final Condition there_are_tickets = taquilla.newCondition();
-    private final Condition there_are_looking = taquilla.newCondition();
+    private final Condition no_longer_looking = taquilla.newCondition();
+    private final Condition ticket_bussy = taquilla.newCondition();
     public Stadium(int limite,Field f){
         this.limite = limite;
         this.limite_looking = 30;
-        this.limite_tickets = 5;
         this.field = f;
         clients = new Clients();
     }
     public void addClient(Client c) throws InterruptedException{
         clients.add(c);
-        
+        this.clients.search_client(c).state = 1;
         taquilla.lock();
         try{
-            while(clients.looking_seat() == limite_looking){
-                this.clients.search_client(c).state = 1;
-                there_are_tickets.await();
+            
+            while(clients.paying_ticket() > 0){
+                ticket_bussy.await();    
             }
-            this.clients.search_client(c).state = 3;
-            look_for_seat(c);
+            c.state = 5;
+            pay_ticket(c);        
             
         }finally{
             taquilla.unlock();
         }
     }
-    private void look_for_seat(Client c) throws InterruptedException {
-        taquilla.lock();
-        while(clients.seating()== limite){
-            is_not_full.await();
+    private void pay_ticket(Client c) throws InterruptedException{
+       taquilla.lock();
+       try{
+            while(clients.waiting_ticket()== limite_looking){
+                no_longer_looking.await();
+            }
+            c.pay();
+            c.state = 3;
+            ticket_bussy.signal();
+            sit(c);
+            
+       }finally{
+            taquilla.unlock();
         }
-        this.clients.search_client(c).state = 2;
-        there_are_tickets.signal();
+       
     }
+    public void sit(Client c) throws InterruptedException{
+        try{
+            taquilla.lock();
+            while(clients.seating()== limite){
+
+                is_not_full.await();
+            }
+            c.state = 2;
+            no_longer_looking.signal();
+        }finally{
+            taquilla.unlock();
+        }
+        
+    }
+
     public void removeClient(Client c) throws InterruptedException{
         taquilla.lock();
         try{
             if(clients.size() > 0){
                 clients.remove(c);
-                c.state = 5;
+                c.state = 6;
                 is_not_full.signal();
             }
         }finally{
@@ -75,7 +97,7 @@ public class Stadium implements Runnable{
         while(clients.size() > 0){
             try {
                 Thread.sleep(1000);
-                System.out.println("Clients: \n In seat: "+clients.seating()+" \n Looking for a seat: "+clients.looking_seat()+"\n Leaving: "+clients.leaving()+"\n Waiting ticket: "+clients.waiting_ticket());
+                System.out.println("Clients: \n In seat: "+clients.seating()+" \n Paying: "+clients.paying_ticket()+" \n Looking for a seat: "+clients.looking_seat()+"\n Leaving: "+clients.leaving()+"\n Waiting ticket: "+clients.waiting_ticket()+"\n Total clients: "+clients.size());
             } catch (InterruptedException ex) {
                 Logger.getLogger(Stadium.class.getName()).log(Level.SEVERE, null, ex);
             }

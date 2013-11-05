@@ -20,7 +20,8 @@ public class Client implements Runnable{
      * 2 = in a seat
      * 3 = looking for a seat
      * 4 = leaving the stadium
-     * 5 = out of the stadium
+     * 5 = Paying a ticket
+     * 6 = out of the stadium
      */
     int state;
     int fun;
@@ -40,7 +41,7 @@ public class Client implements Runnable{
         } catch (InterruptedException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
-        while(this.state < 5){
+        while(this.state < 6){
             try {
                 Thread.sleep(1000/60);
                 if(this.state == 2){
@@ -78,4 +79,8 @@ public class Client implements Runnable{
     int randomNumber =  (int)(fraction + aStart);    
     return randomNumber;
   }
+
+    void pay() throws InterruptedException {
+        Thread.sleep(1000);
+    }
 }
