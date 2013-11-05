@@ -17,44 +17,51 @@ import java.util.logging.Logger;
  */
 public class Field implements Runnable{
     int limite;
-    ArrayList<Player> team_one;
-    ArrayList<Player> team_two;
+    int limite_warming_up = 20;
+    Team team_one;
+    //Team team_one_warming_up;
+    //ArrayList<Player> team_one_bench;
+    Team team_two;
     private final Lock referee = new ReentrantLock();
     public boolean is_playing = true;
     private final Condition team_one_is_full = referee.newCondition();
     private final Condition team_two_is_full = referee.newCondition();
-    private final Condition team_one_is_not_ready = referee.newCondition();
-    private final Condition team_two_is_not_ready = referee.newCondition();
+    private final Condition team_one_warming = referee.newCondition();
+    private final Condition team_two_warming = referee.newCondition();
     public Field(int limite){
         this.limite = limite;
-        team_one = new ArrayList<>();
-        team_two = new ArrayList<>();
+        team_one = new Team();
+        team_two = new Team();
     }
     public void addPlayerTeamOne(Player p) throws InterruptedException{
+        team_one.add(p);
         referee.lock();
+        
         try{
-            while(team_one.size() == limite){
-                System.out.println("Soy el jugador "+p.number+" y estoy esperando para entrar");
-                team_one_is_full.await();
+            while(team_one.warming_up() == limite_warming_up){
+             //   System.out.println("Soy el jugador "+p.number+" y estoy esperando para calentar");
+                team_one_warming.await();
+                team_one.search_player(p).state = 2;
             }
-            team_one.add(p);
-            p.state = 1;
-            //System.out.println("Soy el jugador "+p.number+" del equipo uno y entre a jugar");
-            //team_one_is_not_ready.signal();
+            team_one.search_player(p).state = 3;
+          //  System.out.println("Soy el jugador "+p.number+" y voy a calentar");
         }finally{
             referee.unlock();
         }
     }
+
     public void addPlayerTeamTwo(Player p) throws InterruptedException{
+        team_two.add(p);
         referee.lock();
+        
         try{
-            while(team_two.size() == limite){
-                team_two_is_full.await();
+            while(team_two.warming_up() == limite_warming_up){
+               // System.out.println("Soy el jugador "+p.number+" del equipo 2 y estoy esperando para calentar");
+                team_two.search_player(p).state = 2;
+                team_two_warming.await();
             }
-            team_two.add(p);
-            p.state = 1;
-            //System.out.println("Soy el jugador "+p.number+" del equipo dos y entre a jugar");
-            //team_two_is_not_ready.signal();
+            team_two.search_player(p).state = 3;
+         //   System.out.println("Soy el jugador "+p.number+" y voy a calentar");
         }finally{
             referee.unlock();
         }
@@ -64,18 +71,12 @@ public class Field implements Runnable{
         try{
             if(team_one.size() > 0){
                 team_one.remove(p);
-                p.state = 3;
-                System.out.println("Soy el jugador "+p.number+" del equipo uno y me voy del partido");
+                p.state = 6;
+             //   System.out.println("Soy el jugador "+p.number+" del equipo dos y me voy del partido");
                 team_one_is_full.signal();
                 if(team_one.size()< 1) is_playing = false;
             }
-            else{
-                is_playing = false;
-            }
-            /*while(team_one.size() < limite){
-                //team_one_is_not_ready.await();
-            }*/
-            team_one_is_full.signal();
+
         }finally{
             referee.unlock();
         }
@@ -85,9 +86,8 @@ public class Field implements Runnable{
         try{
             if(team_two.size() > 0){
                 team_two.remove(p);
-                p.state = 3;
-                System.out.println("Soy el jugador "+p.number+" del equipo dos y me voy del partido");
-                team_two_is_full.signal();
+                p.state = 6;
+             //   System.out.println("Soy el jugador "+p.number+" del equipo dos y me voy del partido");
                 if(team_two.size()< 1) is_playing = false;
             }
             team_two_is_full.signal();
@@ -96,6 +96,52 @@ public class Field implements Runnable{
         }
     }
 
+    public void goToField(Player p,int team) throws InterruptedException {
+        referee.lock();
+        
+        try{
+            if(team == 1){
+                while(team_one.playing()== limite){
+                 //   System.out.println("Soy el jugador "+p.number+" y estoy esperando para entrar");
+                    team_one_is_full.await();
+                }
+                team_one.search_player(p).state = 1;
+                team_one_warming.signal();
+               // System.out.println("Soy el jugador "+p.number+" y estoy entrando a jugar");
+            }
+            else if(team == 2){
+                while(team_two.playing()== limite){
+                    //System.out.println("Soy el jugador "+p.number+" y estoy esperando para entrar");
+                    team_two_is_full.await();
+                }
+                team_two.search_player(p).state = 1;
+                team_two_warming.signal();
+                //System.out.println("Soy el jugador "+p.number+" y estoy entrando a jugar");
+            }
+        }finally{
+            referee.unlock();
+        }
+    }
+    public void injured(Player p, int team) throws InterruptedException{
+        referee.lock();
+        try{
+            if(team == 1){
+                
+                if(p != null)
+                    team_one.search_player(p).state = 4;
+                team_one_is_full.signal();
+            }
+            else if(team == 2){
+                if(p != null)
+                    team_two.search_player(p).state = 4;
+                team_two_is_full.signal();
+            }
+            //System.out.println("Soy el jugador "+p.number+" y me acabo de lesionar");
+        }finally{
+            referee.unlock();
+        }
+    }
+    
     @Override
     public void run() {
         while(is_playing){
@@ -104,8 +150,11 @@ public class Field implements Runnable{
             } catch (InterruptedException ex) {
                 Logger.getLogger(Field.class.getName()).log(Level.SEVERE, null, ex);
             }
-            System.out.println("Hay "+team_one.size()+" jugadores en el equipo uno");
-            System.out.println("Hay "+team_two.size()+" jugadores en el equipo dos");
+            //System.out.println("Hay "+team_one.playing()+" jugadores en el equipo uno");
+            //System.out.println("Hay "+team_two.playing()+" jugadores en el equipo dos");
+            System.out.println("Team 1: \n Playing: "+team_one.playing()+" \n Warming up: "+team_one.warming_up()+"\n Injured: "+team_one.injured()+"\n In the bench: "+team_one.in_bench()+"\n Leaving the field: "+team_one.leaving());
+            System.out.println("Team 1: \n Playing: "+team_two.playing()+" \n Warming up: "+team_two.warming_up()+"\n Injured: "+team_two.injured()+"\n In the bench: "+team_two.in_bench()+"\n Leaving the field: "+team_two.leaving());
         }
     }
+
 }

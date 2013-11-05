@@ -15,16 +15,21 @@ import java.util.logging.Logger;
 public class Player implements Runnable{
     /*
      * Different states
-     * 0 = waiting to go to the field
+     * 0 = initial state
      * 1 = playing in the field
-     * 2 = leaving the field
-     * 3 = out of the field
+     * 2 = in the bench
+     * 3 = warming up
+     * 4 = injured
+     * 5 = leaving the field
+     * 6 = out of the field
+     * 
      */
     int state;
     int energy = 200;
     int counter = 0;
     int health = 1;
     int team;
+    int nivel_preparacion = 0;
     int number = 0;
     Field field;
     public Player(Field f,int team,int number){
@@ -52,18 +57,24 @@ public class Player implements Runnable{
                 Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        while(state < 3){
+        while(state < 6){
             try {
                 Thread.sleep(1000/60);
+                if(this.state == 3){
+                    nivel_preparacion++;
+                    if(nivel_preparacion > 100){
+                        field.goToField(this,this.team);
+                    }
+                }
                 if(this.state == 1){
                     energy--;
                     if(energy < 0 ){
-                        this.state = 2;
+                        this.state = 5;
                         counter = 50;
                     }
                 }
               
-                if(this.state == 2) counter ++;
+                if(this.state == 5) counter ++;
                 if(counter > 50){
                      if(this.team == 1){
                         try {
@@ -82,11 +93,14 @@ public class Player implements Runnable{
                 }
                 
                 if(getRandomInteger(-health, 100, new Random())< 0){
-                    //the player is injured
                     this.counter = 50;
-                    this.state = 2;
-                } 
-                
+                    field.injured(this,this.team);
+                }
+                if(this.state == 4 ){
+                    counter ++;
+                    if(this.counter > 50)
+                        this.state = 5;
+                }
                 
             } catch (InterruptedException ex) {
                 Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);

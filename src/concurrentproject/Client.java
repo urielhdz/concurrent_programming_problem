@@ -16,17 +16,21 @@ public class Client implements Runnable{
     /*
      * Different states
      * 0 = waiting to go to the stadium
-     * 1 = in the stadium
-     * 2 = leaving the stadium
-     * 3 = out of the stadium
+     * 1 = waiting for a ticket
+     * 2 = in a seat
+     * 3 = looking for a seat
+     * 4 = leaving the stadium
+     * 5 = out of the stadium
      */
     int state;
     int fun;
     int counter = 0;
+    int id;
     Stadium stadium;
-    public Client(Stadium s){
+    public Client(Stadium s, int id){
         this.state = 0;
         this.stadium = s;
+        this.id = id;
         this.fun = getRandomInteger(200, 250, new Random());
     }
     @Override
@@ -36,18 +40,18 @@ public class Client implements Runnable{
         } catch (InterruptedException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
-        while(this.state < 3){
+        while(this.state < 5){
             try {
                 Thread.sleep(1000/60);
-                if(this.state == 1){
+                if(this.state == 2){
                     fun--;
                 }
                 if(this.fun < 0){
                     this.counter = 50;
-                    this.state = 2;
+                    this.state = 4;
                     System.out.println("Cliente abandonando el estadio");
                 }
-                if(this.state == 2){
+                if(this.state == 4){
                     counter++;
                 }
                 if(counter > 50){

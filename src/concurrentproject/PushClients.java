@@ -14,11 +14,13 @@ import java.util.logging.Logger;
 public class PushClients implements Runnable{
     
     Stadium stadium;
+    int id_contador;
     public PushClients(Stadium s){
-        
+        id_contador = 0;
         this.stadium = s;
         for(int i = 0;i<10;i++){
-            Client c = new Client(stadium);
+            id_contador++;
+            Client c = new Client(stadium,id_contador);
             Thread t = new Thread(c);
             t.start();
         }
@@ -29,7 +31,8 @@ public class PushClients implements Runnable{
         while(stadium.field.is_playing){
             try {
                 Thread.sleep(1000);
-                Client c = new Client(stadium);
+                id_contador++;
+                Client c = new Client(stadium,id_contador);
                 Thread t = new Thread(c);
                 t.start();
             } catch (InterruptedException ex) {
