@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 public class Stadium implements Runnable{
     int limite;
     int limite_looking;
+    private TextModifiers textMod;
     
     Field field;
     Clients clients;
@@ -31,6 +32,9 @@ public class Stadium implements Runnable{
         this.limite_looking = 30;
         this.field = f;
         clients = new Clients();
+    }
+     public void addTextModifier(TextModifiers textMod){
+        this.textMod = textMod;
     }
     public void addClient(Client c) throws InterruptedException{
         clients.add(c);
@@ -96,8 +100,12 @@ public class Stadium implements Runnable{
     public void run() {
         while(clients.size() > 0){
             try {
+                if( ! field.is_playing){
+                    clients.goAway();
+                }
                 Thread.sleep(1000);
                 System.out.println("Clients: \n In seat: "+clients.seating()+" \n Paying: "+clients.paying_ticket()+" \n Looking for a seat: "+clients.looking_seat()+"\n Leaving: "+clients.leaving()+"\n Waiting ticket: "+clients.waiting_ticket()+"\n Total clients: "+clients.size());
+                this.textMod.modifyClientPanel("\nClients: \n In seat: "+clients.seating()+" \n Paying: "+clients.paying_ticket()+" \n Looking for a seat: "+clients.looking_seat()+"\n Leaving: "+clients.leaving()+"\n Waiting ticket: "+clients.waiting_ticket()+"\n Total clients: "+clients.size());
             } catch (InterruptedException ex) {
                 Logger.getLogger(Stadium.class.getName()).log(Level.SEVERE, null, ex);
             }

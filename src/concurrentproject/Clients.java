@@ -29,6 +29,12 @@ public class Clients {
         }
         return contador;
     }
+    public void goAway(){
+        for(Client c : clients){
+            if(c != null)
+                c.state = 4;
+        }
+    }
     public int seating(){
         
         int contador = 0;

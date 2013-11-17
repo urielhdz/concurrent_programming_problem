@@ -24,6 +24,7 @@ public class Field implements Runnable{
     Team team_two;
     private final Lock referee = new ReentrantLock();
     public boolean is_playing = true;
+    private TextModifiers textMod;
     private final Condition team_one_is_full = referee.newCondition();
     private final Condition team_two_is_full = referee.newCondition();
     private final Condition team_one_warming = referee.newCondition();
@@ -32,6 +33,9 @@ public class Field implements Runnable{
         this.limite = limite;
         team_one = new Team();
         team_two = new Team();
+    }
+    public void addTextModifier(TextModifiers textMod){
+        this.textMod = textMod;
     }
     public void addPlayerTeamOne(Player p) throws InterruptedException{
         team_one.add(p);
@@ -150,7 +154,8 @@ public class Field implements Runnable{
             } catch (InterruptedException ex) {
                 Logger.getLogger(Field.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+            this.textMod.modifyFieldPanel("\nTeam 1: \n Playing: "+team_one.playing()+" \n Warming up: "+team_one.warming_up()+"\n Injured: "+team_one.injured()+"\n In the bench: "+team_one.in_bench()+"\n Leaving the field: "+team_one.leaving());
+            this.textMod.modifyFieldPanel("\nTeam 2: \n Playing: "+team_two.playing()+" \n Warming up: "+team_two.warming_up()+"\n Injured: "+team_two.injured()+"\n In the bench: "+team_two.in_bench()+"\n Leaving the field: "+team_two.leaving());
             System.out.println("Team 1: \n Playing: "+team_one.playing()+" \n Warming up: "+team_one.warming_up()+"\n Injured: "+team_one.injured()+"\n In the bench: "+team_one.in_bench()+"\n Leaving the field: "+team_one.leaving());
             System.out.println("Team 1: \n Playing: "+team_two.playing()+" \n Warming up: "+team_two.warming_up()+"\n Injured: "+team_two.injured()+"\n In the bench: "+team_two.in_bench()+"\n Leaving the field: "+team_two.leaving());
         }

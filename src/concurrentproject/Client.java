@@ -48,12 +48,12 @@ public class Client implements Runnable{
                     fun--;
                 }
                 if(this.fun < 0){
-                    this.counter = 50;
+                    this.counter = 51;
                     this.state = 4;
                     System.out.println("Cliente abandonando el estadio");
                 }
                 if(this.state == 4){
-                    counter++;
+                    counter = 100;
                 }
                 if(counter > 50){
                     try {
@@ -81,6 +81,6 @@ public class Client implements Runnable{
   }
 
     void pay() throws InterruptedException {
-        Thread.sleep(1000);
+        Thread.sleep(100);
     }
 }
