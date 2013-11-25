@@ -5,15 +5,16 @@
 package concurrentproject;
 
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  *
  * @author Uriel
  */
 public class Clients {
-    private ArrayList<Client> clients;
+    private CopyOnWriteArrayList<Client> clients;
     public Clients(){
-        clients = new ArrayList<>();
+        clients = new CopyOnWriteArrayList<>();
     }
     public void add(Client c){
         this.clients.add(c);

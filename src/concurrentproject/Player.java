@@ -25,7 +25,7 @@ public class Player implements Runnable{
      * 
      */
     int state;
-    int energy = 200;
+    int energy = 1000;
     int counter = 0;
     int health = 1;
     int team;
@@ -37,7 +37,7 @@ public class Player implements Runnable{
         this.number = number;
         this.field = f;
         this.state = 0;
-        this.energy = getRandomInteger(100, 150, new Random());
+        this.energy = getRandomInteger(600, 800, new Random());
         this.health = getRandomInteger(0, 1, new Random());
         
     }

@@ -17,14 +17,14 @@ import java.util.logging.Logger;
  */
 public class Field implements Runnable{
     int limite;
-    int limite_warming_up = 20;
+    int limite_warming_up = 11;
     Team team_one;
     //Team team_one_warming_up;
     //ArrayList<Player> team_one_bench;
     Team team_two;
     private final Lock referee = new ReentrantLock();
     public boolean is_playing = true;
-    private TextModifiers textMod;
+    private TeamText textMod;
     private final Condition team_one_is_full = referee.newCondition();
     private final Condition team_two_is_full = referee.newCondition();
     private final Condition team_one_warming = referee.newCondition();
@@ -34,7 +34,7 @@ public class Field implements Runnable{
         team_one = new Team();
         team_two = new Team();
     }
-    public void addTextModifier(TextModifiers textMod){
+    public void addTextModifier(TeamText textMod){
         this.textMod = textMod;
     }
     public void addPlayerTeamOne(Player p) throws InterruptedException{
@@ -154,10 +154,26 @@ public class Field implements Runnable{
             } catch (InterruptedException ex) {
                 Logger.getLogger(Field.class.getName()).log(Level.SEVERE, null, ex);
             }
-            this.textMod.modifyFieldPanel("\nTeam 1: \n Playing: "+team_one.playing()+" \n Warming up: "+team_one.warming_up()+"\n Injured: "+team_one.injured()+"\n In the bench: "+team_one.in_bench()+"\n Leaving the field: "+team_one.leaving());
-            this.textMod.modifyFieldPanel("\nTeam 2: \n Playing: "+team_two.playing()+" \n Warming up: "+team_two.warming_up()+"\n Injured: "+team_two.injured()+"\n In the bench: "+team_two.in_bench()+"\n Leaving the field: "+team_two.leaving());
-            System.out.println("Team 1: \n Playing: "+team_one.playing()+" \n Warming up: "+team_one.warming_up()+"\n Injured: "+team_one.injured()+"\n In the bench: "+team_one.in_bench()+"\n Leaving the field: "+team_one.leaving());
-            System.out.println("Team 1: \n Playing: "+team_two.playing()+" \n Warming up: "+team_two.warming_up()+"\n Injured: "+team_two.injured()+"\n In the bench: "+team_two.in_bench()+"\n Leaving the field: "+team_two.leaving());
+            //this.textMod.modifyFieldPanel("\nTeam 1: \n Playing: "+team_one.playing()+" \n Warming up: "+team_one.warming_up()+"\n Injured: "+team_one.injured()+"\n In the bench: "+team_one.in_bench()+"\n Leaving the field: "+team_one.leaving());
+            //this.textMod.modifyFieldPanel("\nTeam 2: \n Playing: "+team_two.playing()+" \n Warming up: "+team_two.warming_up()+"\n Injured: "+team_two.injured()+"\n In the bench: "+team_two.in_bench()+"\n Leaving the field: "+team_two.leaving());
+            //"Team 1: \n Playing: "+team_one.playing()+
+            //" Warming up: "+team_one.warming_up()+"
+            //Injured: "+team_one.injured()+"
+            //In the bench: "+team_one.in_bench()+"
+            //Leaving the field: "+team_one.leaving()
+            this.textMod.modifyTextField(0, team_one.playing()+"", 1);
+            this.textMod.modifyTextField(1, team_one.warming_up()+"", 1);
+            this.textMod.modifyTextField(2, team_one.injured()+"", 1);
+            this.textMod.modifyTextField(3, team_one.in_bench()+"", 1);
+            this.textMod.modifyTextField(4, team_one.leaving()+"", 1);
+            
+            this.textMod.modifyTextField(0, team_two.playing()+"", 2);
+            this.textMod.modifyTextField(1, team_two.warming_up()+"", 2);
+            this.textMod.modifyTextField(2, team_two.injured()+"", 2);
+            this.textMod.modifyTextField(3, team_two.in_bench()+"", 2);
+            this.textMod.modifyTextField(4, team_two.leaving()+"", 2);
+//            System.out.println("Team 1: \n Playing: "+team_one.playing()+" \n Warming up: "+team_one.warming_up()+"\n Injured: "+team_one.injured()+"\n In the bench: "+team_one.in_bench()+"\n Leaving the field: "+team_one.leaving());
+  //          System.out.println("Team 1: \n Playing: "+team_two.playing()+" \n Warming up: "+team_two.warming_up()+"\n Injured: "+team_two.injured()+"\n In the bench: "+team_two.in_bench()+"\n Leaving the field: "+team_two.leaving());
         }
     }
 

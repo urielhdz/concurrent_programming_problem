@@ -32,7 +32,7 @@ public class Client implements Runnable{
         this.state = 0;
         this.stadium = s;
         this.id = id;
-        this.fun = getRandomInteger(200, 250, new Random());
+        this.fun = getRandomInteger(200, 350, new Random());
     }
     @Override
     public void run() {
@@ -50,7 +50,7 @@ public class Client implements Runnable{
                 if(this.fun < 0){
                     this.counter = 51;
                     this.state = 4;
-                    System.out.println("Cliente abandonando el estadio");
+                    //System.out.println("Cliente abandonando el estadio");
                 }
                 if(this.state == 4){
                     counter = 100;
