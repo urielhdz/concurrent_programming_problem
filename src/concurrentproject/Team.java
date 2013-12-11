@@ -60,10 +60,34 @@ public class Team {
      public int size(){
          return this.players.size();
      }
+     public void go_out(){
+         for(Player p : players){
+             p.state = 5;
+         }
+     }
      public Player search_player(Player pl){
          for(Player p : players){
              if(p.number == pl.number) return p;
          }
          return null;
+     }
+     public CopyOnWriteArrayList getPlayers(){
+         return this.players;
+     }
+     public CopyOnWriteArrayList getPlayersPlaying(){
+        CopyOnWriteArrayList my_players = new CopyOnWriteArrayList();
+        for(Player p : players){
+            if(p.state == 1)
+                my_players.add(p);
+        }
+        return my_players;
+     }
+     public CopyOnWriteArrayList getPlayersInBench(){
+        CopyOnWriteArrayList my_players = new CopyOnWriteArrayList();
+        for(Player p : players){
+            if(p.state == 2)
+                my_players.add(p);
+        }
+        return my_players;
      }
 }

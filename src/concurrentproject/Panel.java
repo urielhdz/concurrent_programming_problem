@@ -6,6 +6,10 @@ import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JFrame;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -23,12 +27,17 @@ public class Panel extends JPanel {
     
     private JPanel statePanel;
     private JPanel teamsPanel;
-    private Canvas canvas;
+    public Lienzo canvas;
     
+    private JButton buton;
+    private JFrame jCredits;
     public Panel(String description) {
         
         this.setLayout(new BorderLayout());
-        canvas = new Canvas();
+        buton = new JButton("Credits");
+        
+        canvas = new Lienzo();
+        jCredits = new JFrame("Credits");
         canvas.setBackground(Color.WHITE);
         labelClient = new JLabel[7];
         labelTeam1 = new JLabel[6];
@@ -60,6 +69,21 @@ public class Panel extends JPanel {
             this.statePanel.add(labelClient[x]);
             this.statePanel.add(textField[x]);
         }
+        buton.addActionListener(new ActionListener(){
+
+            public void actionPerformed(ActionEvent e) {
+                jCredits.setLayout(new GridLayout(0,1,0,0));
+                jCredits.add(new JLabel("Creditos"));
+                jCredits.add(new JLabel("Universidad Politecnica de Chiapas"));
+                jCredits.add(new JLabel("Marcos Uriel Hernandez Camacho"));
+                jCredits.add(new JLabel("Jorge Fernando Palacios de los Santos"));
+                jCredits.add(new JLabel("Luis Santiago Vazquez Mancilla"));
+                jCredits.setSize(400,150);
+                jCredits.setVisible(true);
+            }
+            
+        });
+        this.add(buton, BorderLayout.EAST);
         this.add(statePanel, BorderLayout.NORTH);
         this.add(teamsPanel, BorderLayout.SOUTH);
         this.add(canvas,BorderLayout.CENTER);

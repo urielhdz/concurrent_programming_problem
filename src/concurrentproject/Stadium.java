@@ -74,8 +74,9 @@ public class Stadium implements Runnable {
     }
 
     public void sit(Client c) throws InterruptedException {
+        taquilla.lock();
         try {
-            taquilla.lock();
+            
             while (clients.seating() == limite) {
 
                 is_not_full.await();

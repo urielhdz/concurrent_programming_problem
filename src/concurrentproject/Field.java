@@ -25,17 +25,50 @@ public class Field implements Runnable{
     private final Lock referee = new ReentrantLock();
     public boolean is_playing = true;
     private TeamText textMod;
+    private int seconds;
+    private int counter_seconds = 0;
     private final Condition team_one_is_full = referee.newCondition();
     private final Condition team_two_is_full = referee.newCondition();
     private final Condition team_one_warming = referee.newCondition();
     private final Condition team_two_warming = referee.newCondition();
-    public Field(int limite){
+    public Field(int limite,int time){
         this.limite = limite;
+        this.seconds = time;
         team_one = new Team();
         team_two = new Team();
     }
     public void addTextModifier(TeamText textMod){
         this.textMod = textMod;
+    }
+    public void warm_up_team_one(Player p) throws InterruptedException{
+        referee.lock();
+        
+        try{
+            while(team_one.warming_up() == limite_warming_up){
+             //   System.out.println("Soy el jugador "+p.number+" y estoy esperando para calentar");
+                team_one_warming.await();
+                team_one.search_player(p).state = 2;
+            }
+            team_one.search_player(p).state = 3;
+          //  System.out.println("Soy el jugador "+p.number+" y voy a calentar");
+        }finally{
+            referee.unlock();
+        }
+    }
+    public void warm_up_team_two(Player p) throws InterruptedException{
+        referee.lock();
+        
+        try{
+            while(team_two.warming_up() == limite_warming_up){
+             //   System.out.println("Soy el jugador "+p.number+" y estoy esperando para calentar");
+                team_two_warming.await();
+                team_two.search_player(p).state = 2;
+            }
+            team_two.search_player(p).state = 3;
+          //  System.out.println("Soy el jugador "+p.number+" y voy a calentar");
+        }finally{
+            referee.unlock();
+        }
     }
     public void addPlayerTeamOne(Player p) throws InterruptedException{
         team_one.add(p);
@@ -150,7 +183,12 @@ public class Field implements Runnable{
     public void run() {
         while(is_playing){
             try {
-                Thread.sleep(500);
+                Thread.sleep(1000);
+                counter_seconds++;
+                if(counter_seconds >= seconds){
+                    this.team_one.go_out();
+                    this.team_two.go_out();
+                }
             } catch (InterruptedException ex) {
                 Logger.getLogger(Field.class.getName()).log(Level.SEVERE, null, ex);
             }

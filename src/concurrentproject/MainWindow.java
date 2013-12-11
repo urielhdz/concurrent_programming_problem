@@ -9,8 +9,8 @@ public class MainWindow extends JFrame {
 
     public MainWindow() {
         super("Stadium simulator");
- 
-        Field field = new Field(11);
+        int seconds = Integer.parseInt(JOptionPane.showInputDialog(null, "How many seconds do you want the game to be played?"));
+        Field field = new Field(11,seconds);
         
         int limit = Integer.parseInt(JOptionPane.showInputDialog(null, "Limit of seats for the stadium ", 
                                     "Concurrent Programming", 1));
@@ -26,19 +26,21 @@ public class MainWindow extends JFrame {
         Stadium s = new Stadium(limit,field);
         //Makes the clients go the stadium
         PushClients pc = new PushClients(s);
-        Thread t = new Thread(field);
-        t.start();
-        t = new Thread(pc);
-        t.start();
-        t = new Thread(s);
-        t.start();
+        Thread t3 = new Thread(field);
+        t3.start();
+        //t = new Thread(pc);
+        //t.start();
+        
+        Thread t2 = new Thread(s);
+        
+        t2.start();
 
         setSize(1000, 500);
         //setLayout(new GridLayout(0, 2, 15, 10));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         clientPanel = new Panel("Cliente");
-
+        clientPanel.canvas.setStadium(field);
         field.addTextModifier(new TeamText(){
 
             @Override

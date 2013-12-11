@@ -11,7 +11,7 @@ import java.util.logging.Logger;
  *
  * @author Uriel
  */
-public class PushClients implements Runnable{
+public class PushClients {
     
     Stadium stadium;
     int id_contador;
@@ -26,16 +26,5 @@ public class PushClients implements Runnable{
         }
     }
 
-    @Override
-    public void run() {
-        while(stadium.field.is_playing){
-            try {
-                Thread.sleep(100);
-                
-            } catch (InterruptedException ex) {
-                Logger.getLogger(PushClients.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-        }
-    }
+    
 }

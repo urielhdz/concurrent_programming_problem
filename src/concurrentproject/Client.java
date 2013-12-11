@@ -27,6 +27,7 @@ public class Client implements Runnable{
     int fun;
     int counter = 0;
     int id;
+    boolean is_going_to_pay = true;
     Stadium stadium;
     public Client(Stadium s, int id){
         this.state = 0;
@@ -81,6 +82,9 @@ public class Client implements Runnable{
   }
 
     void pay() throws InterruptedException {
-        Thread.sleep(100);
+        if(is_going_to_pay){
+            is_going_to_pay = false;
+            Thread.sleep(50);
+        }
     }
 }
