@@ -24,6 +24,7 @@ public class SpectatosFrame extends Canvas implements Runnable{
     public ArrayList<Client> sea;
     int x = 27;
     int y = 20;
+    int xl = 0; int yl=0;
     int seat;
     int look;
     int leave;
@@ -84,6 +85,20 @@ public class SpectatosFrame extends Canvas implements Runnable{
         
        
         //if(clients==null){
+        if(look != 0){
+                ArrayList<Client> looc = clients.getLookingClients();
+                for(Client c : looc){
+                    bufferGraphics.drawImage(c.getClientImage(), xl+=15, yl, 10, 15, this);
+                    if(xl > 30){
+                        xl = 0;
+                        yl +=15;
+                    }
+                }
+                xl=0;
+                yl=0;
+            }else{
+            bufferGraphics.clearRect(0, 0, 100, 150);
+        }
             if(seat != 0){
                 bufferGraphics.drawImage(this.background, 0, 0, this.getSize().width,this.getSize().height, null);
                 ArrayList<Client> sit = clients.getSittingClients();
@@ -97,9 +112,10 @@ public class SpectatosFrame extends Canvas implements Runnable{
                     }
                 }
                  x=27; y = 25;
-            }else{
+            } else{
                 bufferGraphics.drawImage(this.background, 0, 0, this.getSize().width,this.getSize().height, null);
             }
+            
        // }
         //bufferGraphics.drawImage(this.arco.img,this.arco.getX(),this.arco.getY(),this);
         g.drawImage(this.bufferImg,0,0,this);

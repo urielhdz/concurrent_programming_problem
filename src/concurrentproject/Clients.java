@@ -100,4 +100,13 @@ public class Clients {
          }
         return null;
      }
+     public ArrayList<Client> getLookingClients(){
+         ArrayList<Client> total = new ArrayList<Client>();
+         for(Client c : clients){
+             if(c != null){
+                 if(c.state == 1) total.add(c);
+            }
+         }
+         return total;
+     }
 }
