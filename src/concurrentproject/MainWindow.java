@@ -6,12 +6,14 @@ import javax.swing.JOptionPane;
 public class MainWindow extends JFrame {
 
     private Panel clientPanel;
+    private JFrame spectatorsFrame;
 
     public MainWindow() {
         super("Stadium simulator");
+        
         int seconds = Integer.parseInt(JOptionPane.showInputDialog(null, "How many seconds do you want the game to be played?"));
         Field field = new Field(11,seconds);
-        
+        spectatorsFrame = new JFrame();
         int limit = Integer.parseInt(JOptionPane.showInputDialog(null, "Limit of seats for the stadium ", 
                                     "Concurrent Programming", 1));
         for(int i = 1;i<=30;i++){
@@ -57,6 +59,16 @@ public class MainWindow extends JFrame {
         });
 
         add(clientPanel);
+        setLocationRelativeTo(null);
+        initFrame();
+        spectatorsFrame.setVisible(true);
         setVisible(true);
+    }   
+    
+    private void initFrame(){
+        spectatorsFrame.setUndecorated(true);
+        spectatorsFrame.setLocationRelativeTo(this);
+        spectatorsFrame.setSize(500,150);
+        spectatorsFrame.setLocation(this.getLocation().x+20, 1);
     }
 }
