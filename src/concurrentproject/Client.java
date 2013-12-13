@@ -4,9 +4,11 @@
  */
 package concurrentproject;
 
+import java.awt.Image;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -27,6 +29,8 @@ public class Client implements Runnable{
     int fun;
     int counter = 0;
     int id;
+    private Image clientImage;
+    private Random rand;
     boolean is_going_to_pay = true;
     Stadium stadium;
     public Client(Stadium s, int id){
@@ -34,6 +38,13 @@ public class Client implements Runnable{
         this.stadium = s;
         this.id = id;
         this.fun = getRandomInteger(200, 350, new Random());
+        rand = new Random();
+        int x = rand.nextInt(10) + 1;
+        clientImage = new ImageIcon(this.getClass().getResource("imgs/espc"+x+".png")).getImage();
+
+    }
+    public Image getClientImage(){
+        return this.clientImage;
     }
     @Override
     public void run() {

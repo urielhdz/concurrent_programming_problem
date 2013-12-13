@@ -4,6 +4,7 @@
  */
 package concurrentproject;
 
+import java.awt.Image;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -13,9 +14,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class Clients {
     private CopyOnWriteArrayList<Client> clients;
+    
     public Clients(){
+        
+        
         clients = new CopyOnWriteArrayList<>();
     }
+
     public void add(Client c){
         this.clients.add(c);
     }
@@ -78,5 +83,21 @@ public class Clients {
              if(c == pl) return c;
          }
          return null;
+     }
+     public ArrayList<Client> getSittingClients(){
+         ArrayList<Client> total = new ArrayList<Client>();
+        for(Client c : clients){
+            if(c != null)
+                if(c.state == 2){
+                    total.add(c);
+                }
+        }
+        return total;
+     }
+     public Image getSeatingClientImage(Client p){
+         for(Client c : clients){
+             if(c == p) return c.getClientImage();
+         }
+        return null;
      }
 }

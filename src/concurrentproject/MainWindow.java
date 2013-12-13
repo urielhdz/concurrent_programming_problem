@@ -6,14 +6,14 @@ import javax.swing.JOptionPane;
 public class MainWindow extends JFrame {
 
     private Panel clientPanel;
-    private JFrame spectatorsFrame;
+    private JFrame f;
+    private SpectatosFrame spectatorsFrame;
 
     public MainWindow() {
         super("Stadium simulator");
         
         int seconds = Integer.parseInt(JOptionPane.showInputDialog(null, "How many seconds do you want the game to be played?"));
         Field field = new Field(11,seconds);
-        spectatorsFrame = new JFrame();
         int limit = Integer.parseInt(JOptionPane.showInputDialog(null, "Limit of seats for the stadium ", 
                                     "Concurrent Programming", 1));
         for(int i = 1;i<=30;i++){
@@ -36,7 +36,6 @@ public class MainWindow extends JFrame {
         Thread t2 = new Thread(s);
         
         t2.start();
-
         setSize(1000, 500);
         //setLayout(new GridLayout(0, 2, 15, 10));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -60,15 +59,17 @@ public class MainWindow extends JFrame {
 
         add(clientPanel);
         setLocationRelativeTo(null);
-        initFrame();
-        spectatorsFrame.setVisible(true);
+        spectatorsFrame = new SpectatosFrame(this.getLocation().x,this.getLocation().y, s);
+        Thread t4 = new Thread(spectatorsFrame);
+        t4.start();
+        f = new JFrame();
+        f.setSize(500,150);
+        f.setLocation(this.getLocation().x+20, 1);
+        f.add(spectatorsFrame);
+        f.setVisible(true);
+        //spectatorsFrame.setVisible(true);
         setVisible(true);
     }   
     
-    private void initFrame(){
-        spectatorsFrame.setUndecorated(true);
-        spectatorsFrame.setLocationRelativeTo(this);
-        spectatorsFrame.setSize(500,150);
-        spectatorsFrame.setLocation(this.getLocation().x+20, 1);
-    }
+
 }

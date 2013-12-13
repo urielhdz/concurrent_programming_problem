@@ -20,6 +20,7 @@ public class Stadium implements Runnable {
     int limite;
     int limite_looking;
     private TextModifiers textMod;
+    private ClientActions actions;
     Field field;
     Clients clients;
     //ArrayList<Client> clients_waiting;
@@ -38,7 +39,9 @@ public class Stadium implements Runnable {
     public void addTextModifier(TextModifiers textMod) {
         this.textMod = textMod;
     }
-
+    public void doSomeActions(ClientActions act){
+        this.actions = act;
+    }
     public void addClient(Client c) throws InterruptedException {
         clients.add(c);
         this.clients.search_client(c).state = 1;
@@ -118,12 +121,20 @@ public class Stadium implements Runnable {
                 //Leaving: "+clients.leaving()+"\n 
                 //Waiting ticket: "+clients.waiting_ticket()+"\n 
                 //Total clients: "+clients.size());
+                this.actions.newClients(clients);
                 this.textMod.modifyTextField(0, clients.seating()+"");
+                this.actions.seating(clients.seating());
                 this.textMod.modifyTextField(1, clients.paying_ticket()+"");
+                this.actions.payingTicket(clients.paying_ticket());
                 this.textMod.modifyTextField(2, clients.looking_seat()+"");
+                this.actions.lookingSeat(clients.looking_seat());
                 this.textMod.modifyTextField(3, clients.leaving()+"");
+                this.actions.leaving(clients.leaving());
                 this.textMod.modifyTextField(4, clients.waiting_ticket()+"");
+                this.actions.waitingTicket(clients.waiting_ticket());
                 this.textMod.modifyTextField(5, clients.size()+"");
+                
+                
                 //this.textMod.modifyClientPanel("\nClients: \n In seat: "+clients.seating()+" \n Paying: "+clients.paying_ticket()+" \n Looking for a seat: "+clients.looking_seat()+"\n Leaving: "+clients.leaving()+"\n Waiting ticket: "+clients.waiting_ticket()+"\n Total clients: "+clients.size());
             } catch (InterruptedException ex) {
                 Logger.getLogger(Stadium.class.getName()).log(Level.SEVERE, null, ex);
